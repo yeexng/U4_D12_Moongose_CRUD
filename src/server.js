@@ -11,8 +11,26 @@ import {
 
 const server = Express();
 const port = process.env.PORT || 3005;
+const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];
 
-server.use(cors());
+server.use(
+  cors({
+    origin: (currentOrigin, corsNext) => {
+      if (!currentOrigin || whitelist.indexOf(currentOrigin) !== -1) {
+        // origin is in the whitelist
+        corsNext(null, true);
+      } else {
+        // origin is not in the whitelist
+        corsNext(
+          createHttpError(
+            400,
+            `Origin ${currentOrigin} is not in the whitelist!`
+          )
+        );
+      }
+    },
+  })
+);
 server.use(Express.json());
 
 server.use("/blogPosts", blogPostsRouter);
