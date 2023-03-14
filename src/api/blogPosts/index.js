@@ -69,7 +69,7 @@ blogPostsRouter.delete("/:blogPostsID", async (req, res, next) => {
       req.params.blogPostsID
     );
     if (deletedBlogPost) {
-      res.status(204).send();
+      res.status(204).send({ message: "BlogPost Deleted" });
     } else {
       next(
         createHttpError(
